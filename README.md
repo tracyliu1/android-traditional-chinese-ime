@@ -4,10 +4,11 @@ https://code.google.com/archive/p/android-traditional-chinese-ime/
 
 
 ### 注音输入法
+修改后使之支持TV遥控器操作。
 
-<img src="https://github.com/tracyliu1/LoopLayout/blob/master/screenshot/chinese_tradition_IME.png" width = "600"/>
+<img src="https://github.com/tracyliu1/android-traditional-chinese-ime/blob/master/screenshots/chinese_tradition_IME.png" width = "600"/>
 
-<img src="https://github.com/tracyliu1/LoopLayout/blob/master/screenshot/code.png" />
+<img src="https://github.com/tracyliu1/android-traditional-chinese-ime/blob/master/screenshots/code.png" />
 
 重写onDraw方法绘制选中状态
 ```
