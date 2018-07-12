@@ -31,6 +31,8 @@ import android.view.View;
  */
 public class CandidateView extends View {
 
+    private static final String TAG = "CandidateView";
+
   /**
    * Listens to candidate-view actions.
    */
@@ -43,7 +45,7 @@ public class CandidateView extends View {
 
   private CandidateViewListener listener;
   private String candidates = "";
-  private int highlightIndex;
+  public int highlightIndex;
 
   private Drawable candidateHighlight;
   private Drawable candidateSeparator;

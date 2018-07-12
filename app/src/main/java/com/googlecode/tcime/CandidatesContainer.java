@@ -18,109 +18,158 @@ package com.googlecode.tcime;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 /**
  * Contains all candidates in pages where users could move forward (next page)
- * or move backward (previous) page to select one of these candidates. 
+ * or move backward (previous) page to select one of these candidates.
  */
 public class CandidatesContainer extends LinearLayout {
 
-  private static final int ARROW_ALPHA_ENABLED = 0xff;
-  private static final int ARROW_ALPHA_DISABLED = 0x40;
+    private static final String TAG = "CandidatesContainer";
+    private static final int ARROW_ALPHA_ENABLED = 0xff;
+    private static final int ARROW_ALPHA_DISABLED = 0x40;
 
-  private CandidateView candidateView;
-  private ImageButton leftArrow;
-  private ImageButton rightArrow;
-  private String words;
-  private boolean highlightDefault;
-  private int currentPage;
-  private int pageCount;
+    private CandidateView candidateView;
+    private ImageButton leftArrow;
+    private ImageButton rightArrow;
+    public String words;
+    public boolean highlightDefault;
+    private int currentPage;
+    private int pageCount;
 
-  public CandidatesContainer(Context context, AttributeSet attrs) {
-    super(context, attrs);
-  }
-  
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-
-    candidateView = (CandidateView) findViewById(R.id.candidate_view);
-
-    leftArrow = (ImageButton) findViewById(R.id.arrow_left);
-    leftArrow.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        showPage(currentPage - 1);
-      }
-    });
-
-    rightArrow = (ImageButton) findViewById(R.id.arrow_right);
-    rightArrow.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View v) {
-        showPage(currentPage + 1);
-      }
-    });
-  }
-
-  public void setCandidateViewListener(
-      CandidateView.CandidateViewListener listener) {
-    candidateView.setCandidateViewListener(listener);
-  }
-  
-  public void setCandidates(String words, boolean highlightDefault) {
-    // All the words will be split into pages and shown in the candidate-view.
-    this.words = words;
-    this.highlightDefault = highlightDefault;
-    pageCount = getPageCount();
-    showPage(0);
-  }
-
-  public boolean pickHighlighted() {
-    return candidateView.pickHighlighted();
-  }
-
-  private void showPage(int page) {
-    if (isPageEmpty(page)) {
-      candidateView.setCandidates("");
-      enableArrow(leftArrow, false);
-      enableArrow(rightArrow, false);
-    } else {
-      final int start = page * CandidateView.MAX_CANDIDATE_COUNT;
-      final int end = start + Math.min(
-          words.length() - start, CandidateView.MAX_CANDIDATE_COUNT);
-
-      candidateView.setCandidates(words.substring(start, end));
-      if (highlightDefault) {
-        candidateView.highlightDefault();
-      }
-      enableArrow(leftArrow, (page > 0) ? true : false);
-      enableArrow(rightArrow, (page < pageCount - 1) ? true : false);
-    }
-    currentPage = page;
-  }
-
-  /**
-   * Checks if it's an empty page holding no candidates.
-   */
-  private boolean isPageEmpty(int page) {
-    if (page < 0 || page >= pageCount) {
-      return true;
+    public CandidatesContainer(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    // There are candidates in this page. 
-    return false;
-  }
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
 
-  private int getPageCount() {
-    return (int) Math.ceil(
-        (double) words.length() / CandidateView.MAX_CANDIDATE_COUNT);
-  }
+        candidateView = (CandidateView) findViewById(R.id.candidate_view);
 
-  private void enableArrow(ImageButton arrow, boolean enabled) {
-    arrow.setEnabled(enabled);
-    arrow.setAlpha(enabled ? ARROW_ALPHA_ENABLED : ARROW_ALPHA_DISABLED);
-  }
+        leftArrow = (ImageButton) findViewById(R.id.arrow_left);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showPage(currentPage - 1);
+            }
+        });
 
+        rightArrow = (ImageButton) findViewById(R.id.arrow_right);
+        rightArrow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showPage(currentPage + 1);
+            }
+        });
+    }
+
+    public void setCandidateViewListener(
+            CandidateView.CandidateViewListener listener) {
+        candidateView.setCandidateViewListener(listener);
+    }
+
+    public void setCandidates(String words, boolean highlightDefault) {
+        // All the words will be split into pages and shown in the candidate-view.
+        this.words = words;
+        this.highlightDefault = highlightDefault;
+        pageCount = getPageCount();
+        showPage(0);
+    }
+
+    public boolean pickHighlighted() {
+        return candidateView.pickHighlighted();
+    }
+
+    private void showPage(int page) {
+        if (isPageEmpty(page)) {
+            candidateView.setCandidates("");
+            enableArrow(leftArrow, false);
+            enableArrow(rightArrow, false);
+        } else {
+            final int start = page * CandidateView.MAX_CANDIDATE_COUNT;
+            final int end = start + Math.min(
+                    words.length() - start, CandidateView.MAX_CANDIDATE_COUNT);
+
+            candidateView.setCandidates(words.substring(start, end));
+            if (highlightDefault) {
+                candidateView.highlightDefault();
+            }
+            enableArrow(leftArrow, (page > 0) ? true : false);
+            enableArrow(rightArrow, (page < pageCount - 1) ? true : false);
+        }
+        currentPage = page;
+    }
+
+    /**
+     * Checks if it's an empty page holding no candidates.
+     */
+    public boolean isPageEmpty(int page) {
+        if (page < 0 || page >= pageCount) {
+            return true;
+        }
+
+        // There are candidates in this page.
+        return false;
+    }
+
+    private int getPageCount() {
+        return (int) Math.ceil(
+                (double) words.length() / CandidateView.MAX_CANDIDATE_COUNT);
+    }
+
+    private void enableArrow(ImageButton arrow, boolean enabled) {
+        arrow.setEnabled(enabled);
+        arrow.setAlpha(enabled ? ARROW_ALPHA_ENABLED : ARROW_ALPHA_DISABLED);
+    }
+
+    public void processFunctionKey(int keyCode) {
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+
+            candidateView.highlightIndex--;
+
+            if (candidateView.highlightIndex < 0) {
+                candidateView.highlightIndex = 0;
+
+                if (!isPageEmpty(currentPage - 1)) {
+                    showPage(currentPage - 1);
+                }
+            }
+            candidateView.invalidate();
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+
+            if (isPageEmpty(currentPage + 1)) {
+                int num = words.length() % CandidateView.MAX_CANDIDATE_COUNT;
+
+                if(num == 0){
+                    num = CandidateView.MAX_CANDIDATE_COUNT;
+                }
+                if (candidateView.highlightIndex < num - 1) {
+                    candidateView.highlightIndex++;
+                }
+            } else {
+                candidateView.highlightIndex++;
+            }
+
+            if (candidateView.highlightIndex > CandidateView.MAX_CANDIDATE_COUNT - 1) {
+                candidateView.highlightIndex = 0;
+
+                if (!isPageEmpty(currentPage + 1)) {
+                    showPage(currentPage + 1);
+                }
+            }
+
+
+            candidateView.invalidate();
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+            // AbstractIME.ChangeFocusState();
+        } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+
+            pickHighlighted();
+            // AbstractIME.ChangeFocusState();
+        }
+    }
 }
