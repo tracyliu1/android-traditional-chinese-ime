@@ -1,7 +1,7 @@
 # android-traditional-chinese-ime
 https://code.google.com/archive/p/android-traditional-chinese-ime/
 
-
+适用于台湾的注音输入法！
 
 ### 注音输入法
 修改后使之支持TV遥控器操作。
